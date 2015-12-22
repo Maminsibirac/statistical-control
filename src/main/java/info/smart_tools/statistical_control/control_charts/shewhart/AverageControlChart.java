@@ -1,16 +1,15 @@
 package info.smart_tools.statistical_control.control_charts.shewhart;
 
-import info.smart_tools.smartactors.core.*;
-import info.smart_tools.smartactors.core.actors.Actor;
-import info.smart_tools.smartactors.core.actors.annotations.Handler;
-import info.smart_tools.statistical_control.control_charts.shewhart.messages.IBuildControlChartMessage;
-import info.smart_tools.statistical_control.control_charts.shewhart.messages.ICheckControlChartMessage;
+import info.smart_tools.statistical_control.control_charts.shewhart.actors.Coefficients;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class AverageControlChart extends Actor implements ControlChart {
+public class AverageControlChart implements ControlChart {
     /**  */
-    private final Coefficients COEFFICIENTS = new Coefficients();
+    private Coefficients coefficients;
     /**  */
     private Integer dimensionNumber;
     /**  */
@@ -22,66 +21,40 @@ public class AverageControlChart extends Actor implements ControlChart {
     /**  */
     private BigDecimal standardDeviation;
 
-    /**  */
-    private final Field<IObject> PARAMETERS = new Field<IObject>(new FieldName("parameters"));
-    /**  */
-    private final Field<Integer> DIMENSION_NUMBER = new Field<>(new FieldName("dimensionField"));
-    private final Field<BigDecimal> STANDARD_DEVIATION = new Field<>(new FieldName("standardDeviation"));
-    private final Field<BigDecimal> CENTRAL_LINE = new Field<>(new FieldName("centralLine"));
+    private AverageControlChart(final Coefficients coefficients) {
+        this.coefficients = coefficients;
+    }
 
-    /**
-     *
-     * @param params
-     */
-    public AverageControlChart(final IObject params) {
-        try {
-            IObject parameters = PARAMETERS.from(params, IObject.class);
-            if (parameters == null) {
-                return;
-            }
+    public static AverageControlChart create(final Coefficients coefficients) {
+        return new AverageControlChart(coefficients);
+    }
 
-            dimensionNumber = DIMENSION_NUMBER.from(parameters, Integer.class);
-            centralLine = CENTRAL_LINE.from(parameters, BigDecimal.class);
-            standardDeviation = STANDARD_DEVIATION.from(parameters, BigDecimal.class);
-            upperCentralLine = calculateUpperCentralLine();
-            lowerCentralLine = calculateLowerCentralLine();
-        } catch (ReadValueException | ChangeValueException e) {
-            //ToDO : handle.
+    @Override
+    public ControlChart build(final List<ControlGroup> standardGroups) {
+        Map<String, BigDecimal> average = new HashMap<>(standardGroups.size());
+        for (ControlGroup controlGroup : standardGroups) {
+            average.put("X", );
+            average.put("R", );
         }
     }
 
-    /**
-     *
-     * @param message
-     */
     @Override
-    @Handler("build")
-    public void build(final IBuildControlChartMessage message) {
-        if (message.getBuildParams() == null) {
-            //ToDO : handle exception.
-        }
-
+    public List<ControlGroup> check(final List<ControlGroup> controlGroups) {
+        return null;
     }
 
-    /**
-     *
-     * @param message
-     */
     @Override
-    @Handler("check")
-    public void check(final ICheckControlChartMessage message) {
-
+    public BigDecimal getLowerCentralLine() {
+        return lowerCentralLine;
     }
 
-    private BigDecimal calculateUpperCentralLine() {
-        return centralLine.add(
-                standardDeviation.multiply(COEFFICIENTS.getValues().get(dimensionNumber).get("A1"))
-        );
+    @Override
+    public BigDecimal getUpperCentralLine() {
+        return upperCentralLine;
     }
 
-    private BigDecimal calculateLowerCentralLine() {
-        return centralLine.subtract(
-                standardDeviation.multiply(COEFFICIENTS.getValues().get(dimensionNumber).get("A1"))
-        );
+    @Override
+    public BigDecimal getCentralLine() {
+        return centralLine;
     }
 }

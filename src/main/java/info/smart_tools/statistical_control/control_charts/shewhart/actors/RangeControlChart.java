@@ -1,8 +1,9 @@
-package info.smart_tools.statistical_control.control_charts.shewhart;
+package info.smart_tools.statistical_control.control_charts.shewhart.actors;
 
 import info.smart_tools.smartactors.core.IObject;
 import info.smart_tools.smartactors.core.actors.Actor;
 import info.smart_tools.smartactors.core.actors.annotations.Handler;
+import info.smart_tools.statistical_control.control_charts.shewhart.ControlGroup;
 
 import java.util.List;
 

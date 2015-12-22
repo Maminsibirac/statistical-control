@@ -1,10 +1,13 @@
 package info.smart_tools.statistical_control.control_charts.shewhart;
 
-import info.smart_tools.statistical_control.control_charts.shewhart.messages.IBuildControlChartMessage;
-import info.smart_tools.statistical_control.control_charts.shewhart.messages.ICheckControlChartMessage;
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface ControlChart {
-    void build(final IBuildControlChartMessage message);
-//    void build(final List<Map<String, Number>> preliminaryData);
-    void check(final ICheckControlChartMessage message);
+    ControlChart build(final List<ControlGroup> standardGroups);
+    List<ControlGroup> check(final List<ControlGroup> controlGroups);
+
+    BigDecimal getCentralLine();
+    BigDecimal getUpperCentralLine();
+    BigDecimal getLowerCentralLine();
 }

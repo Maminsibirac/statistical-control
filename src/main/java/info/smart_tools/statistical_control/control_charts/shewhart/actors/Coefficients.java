@@ -1,4 +1,4 @@
-package info.smart_tools.statistical_control.control_charts.shewhart;
+package info.smart_tools.statistical_control.control_charts.shewhart.actors;
 
 import java.math.BigDecimal;
 import java.util.Map;
