@@ -1,7 +1,5 @@
 package info.smart_tools.statistical_control.control_charts.shewhart;
 
-import info.smart_tools.statistical_control.control_charts.shewhart.actors.Coefficients;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +22,7 @@ public class AverageControlChart<DataType extends Number & Comparable>
 
     @Override
     public ControlChart build(List<AverageControlGroup<DataType>> groups) {
-        dimensionNumber = groups.size();
+        dimensionNumber = groups.get(0).size();
         centralLine = calculateCentralLine(groups);
         Double averageRange = calculateAverageRange(groups);
         upperCentralLine = calculateUpperCentralLine(averageRange);
@@ -56,8 +54,8 @@ public class AverageControlChart<DataType extends Number & Comparable>
     }
 
     private Double calculateRange(final AverageControlGroup<DataType> group) {
-        DataType max = Collections.max(group);
-        DataType min = Collections.min(group);
+        Number max = Collections.max(group);
+        Number min = Collections.min(group);
 
         return max.doubleValue() - min.doubleValue();
     }
