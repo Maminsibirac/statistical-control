@@ -1,13 +1,30 @@
 package info.smart_tools.statistical_control.control_charts.shewhart;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-public interface ControlChart {
-    ControlChart build(final List<ControlGroup> standardGroups);
-    List<ControlGroup> check(final List<ControlGroup> controlGroups);
+public interface ControlChart<DataType extends Number, Group extends ControlGroup<DataType>> {
+    /**
+     *
+     * @param groups
+     * @return
+     */
+    ControlChart build(final List<Group> groups);
 
-    BigDecimal getCentralLine();
-    BigDecimal getUpperCentralLine();
-    BigDecimal getLowerCentralLine();
+    /**
+     *
+     * @return
+     */
+    Number getCentralLine();
+
+    /**
+     *
+     * @return
+     */
+    Number getUpperCentralLine();
+
+    /**
+     *
+     * @return
+     */
+    Number getLowerCentralLine();
 }

@@ -2,59 +2,89 @@ package info.smart_tools.statistical_control.control_charts.shewhart;
 
 import info.smart_tools.statistical_control.control_charts.shewhart.actors.Coefficients;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class AverageControlChart implements ControlChart {
+public class AverageControlChart<DataType extends Number & Comparable>
+        implements ControlChart<DataType, AverageControlGroup<DataType>> {
     /**  */
     private Coefficients coefficients;
     /**  */
     private Integer dimensionNumber;
     /**  */
-    private BigDecimal centralLine;
+    private Double centralLine;
     /**  */
-    private BigDecimal upperCentralLine;
+    private Double upperCentralLine;
     /**  */
-    private BigDecimal lowerCentralLine;
-    /**  */
-    private BigDecimal standardDeviation;
+    private Double lowerCentralLine;
 
-    private AverageControlChart(final Coefficients coefficients) {
+    public AverageControlChart(final Coefficients coefficients) {
         this.coefficients = coefficients;
     }
 
-    public static AverageControlChart create(final Coefficients coefficients) {
-        return new AverageControlChart(coefficients);
+    @Override
+    public ControlChart build(List<AverageControlGroup<DataType>> groups) {
+        dimensionNumber = groups.size();
+        centralLine = calculateCentralLine(groups);
+        Double averageRange = calculateAverageRange(groups);
+        upperCentralLine = calculateUpperCentralLine(averageRange);
+        lowerCentralLine = calculateLowerCentralLine(averageRange);
+
+        return this;
     }
 
     @Override
-    public ControlChart build(final List<ControlGroup> standardGroups) {
-        Map<String, BigDecimal> average = new HashMap<>(standardGroups.size());
-        for (ControlGroup controlGroup : standardGroups) {
-            average.put("X", );
-            average.put("R", );
-        }
-    }
-
-    @Override
-    public List<ControlGroup> check(final List<ControlGroup> controlGroups) {
-        return null;
-    }
-
-    @Override
-    public BigDecimal getLowerCentralLine() {
+    public Double getLowerCentralLine() {
         return lowerCentralLine;
     }
 
     @Override
-    public BigDecimal getUpperCentralLine() {
+    public Double getUpperCentralLine() {
         return upperCentralLine;
     }
 
     @Override
-    public BigDecimal getCentralLine() {
+    public Double getCentralLine() {
         return centralLine;
+    }
+
+    private Double calculateAverageRange(final List<AverageControlGroup<DataType>> groups) {
+        List<Double> ranges = new ArrayList<>(groups.size());
+        ranges.addAll(groups.stream().map(this::calculateRange).collect(Collectors.toList()));
+
+        return calculateAverage(ranges);
+    }
+
+    private Double calculateRange(final AverageControlGroup<DataType> group) {
+        DataType max = Collections.max(group);
+        DataType min = Collections.min(group);
+
+        return max.doubleValue() - min.doubleValue();
+    }
+
+    private Double calculateCentralLine(final List<AverageControlGroup<DataType>> groups) {
+        List<Double> averageValues = new ArrayList<>(groups.size());
+        for (AverageControlGroup<DataType> group : groups) {
+            averageValues.add(calculateAverage(group));
+        }
+
+        return calculateAverage(averageValues);
+    }
+
+    private Double calculateAverage(final List<? extends Number> values) {
+        Double sum = 0.0;
+        for (Number value : values) {
+            sum = sum + value.doubleValue();
+        }
+
+        return sum / values.size();
+    }
+
+    private Double calculateUpperCentralLine(final Double calculationCoefficient) {
+        return centralLine + (calculationCoefficient * coefficients.get(dimensionNumber, "A2").doubleValue());
+    }
+
+    private Double calculateLowerCentralLine(final Double calculationCoefficient) {
+        return centralLine - (calculationCoefficient * coefficients.get(dimensionNumber, "A2").doubleValue());
     }
 }

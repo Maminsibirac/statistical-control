@@ -40,11 +40,11 @@ public class AverageControlChart extends Actor implements ControlChart {
                 return;
             }
 
-            dimensionNumber = DIMENSION_NUMBER.from(parameters, Integer.class);
-            centralLine = CENTRAL_LINE.from(parameters, BigDecimal.class);
-            standardDeviation = STANDARD_DEVIATION.from(parameters, BigDecimal.class);
-            upperCentralLine = calculateUpperCentralLine();
-            lowerCentralLine = calculateLowerCentralLine();
+//            dimensionNumber = DIMENSION_NUMBER.from(parameters, Integer.class);
+//            centralLine = CENTRAL_LINE.from(parameters, BigDecimal.class);
+//            standardDeviation = STANDARD_DEVIATION.from(parameters, BigDecimal.class);
+//            upperCentralLine = calculateUpperCentralLine();
+//            lowerCentralLine = calculateLowerCentralLine();
         } catch (ReadValueException | ChangeValueException e) {
             //ToDO : handle.
         }
@@ -73,15 +73,16 @@ public class AverageControlChart extends Actor implements ControlChart {
 
     }
 
-    private BigDecimal calculateUpperCentralLine() {
-        return centralLine.add(
-                standardDeviation.multiply(COEFFICIENTS.getValues().get(dimensionNumber).get("A1"))
-        );
-    }
 
-    private BigDecimal calculateLowerCentralLine() {
-        return centralLine.subtract(
-                standardDeviation.multiply(COEFFICIENTS.getValues().get(dimensionNumber).get("A1"))
-        );
-    }
+//    private BigDecimal calculateUpperCentralLine() {
+//        return centralLine.add(
+//                standardDeviation.multiply(COEFFICIENTS.getValues().get(dimensionNumber).get("A1"))
+//        );
+//    }
+//
+//    private BigDecimal calculateLowerCentralLine() {
+//        return centralLine.subtract(
+//                standardDeviation.multiply(COEFFICIENTS.getValues().get(dimensionNumber).get("A1"))
+//        );
+//    }
 }
